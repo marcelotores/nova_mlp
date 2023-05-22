@@ -48,7 +48,7 @@ X_train /= np.max(X_train, axis=0)
 X_test /= np.max(X_test, axis=0)
 
 input_size = X_train.shape[1]
-hidden_size = 1
+hidden_size = 3
 # 3
 # 0.1
 # teste 30%
@@ -57,7 +57,7 @@ output_size = y_train.shape[1]
 
 mlp = MLP(input_size, hidden_size, output_size)
 
-peso1 = mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=1000)
+peso1 = mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=300)
 
 ## P e p -> d
 ##
@@ -74,11 +74,11 @@ print(f"Acurácia: {accuracy}")
 
 # Plotar o gráfico de erro durante o treinamento e teste
 plt.plot(range(len(mlp.train_errors)), mlp.train_errors, label='Treinamento')
-plt.plot(range(len(mlp.test_errors)), mlp.test_errors, label='Teste')
+#plt.plot(range(len(mlp.test_errors)), mlp.test_errors, label='Teste')
 plt.xlabel('Época')
 plt.ylabel('Erro')
-plt.title('Gráfico de Erro durante o Treinamento e Teste')
-plt.legend()
+plt.title('Gráfico de Erro durante o Treinamento')
+#plt.legend()
 plt.show()
 
 #exit()

@@ -52,7 +52,7 @@ class MLP:
             self.b2 -= learning_rate * db2
             self.W1 -= learning_rate * dW1
             self.b1 -= learning_rate * db1
-            self.peso1.append(self.W1)
+            self.peso1.append(self.W1[0][0])
 
 
     def train(self, X_train, y_train, X_test, y_test, learning_rate, num_epochs):
@@ -64,12 +64,13 @@ class MLP:
 
             # Backward pass para treinamento
             self.backward(X_train, y_train, learning_rate)
-
             # Forward pass para teste
             output_test = self.forward(X_test)
             test_error = np.mean(np.abs(output_test - y_test))
             self.test_errors.append(test_error)
-
+            #print(self.peso1)
+            # P e p -> d
+            #exit()
 
     def predict(self, X):
         return np.round(self.forward(X))

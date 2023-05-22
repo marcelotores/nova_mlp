@@ -48,7 +48,7 @@ X_train /= np.max(X_train, axis=0)
 X_test /= np.max(X_test, axis=0)
 
 input_size = X_train.shape[1]
-hidden_size = 4
+hidden_size = 1
 # 3
 # 0.1
 # teste 30%
@@ -59,6 +59,9 @@ mlp = MLP(input_size, hidden_size, output_size)
 
 peso1 = mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=1000)
 
+## P e p -> d
+##
+##exit()
 
 # Fazer previsões no conjunto de teste
 y_pred = mlp.predict(X_test)

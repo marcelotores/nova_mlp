@@ -4,10 +4,8 @@ import ut
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
-
+#from corri import MLP
 from corri import MLP
-#from mlp_array128 import MLP
-#from mlp_p_amostra import Mlp
 
 ## Importandno dados (numpy) por padrão. Para dataframe, use (data_frame=True) com segundo parâmetro
 dataSet = ut.im_data(4)
@@ -44,7 +42,7 @@ output_size = y_train.shape[1]
 
 
 mlp = MLP(input_size, hidden_size, output_size)
-mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=50000)
+mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=5000)
 
 
 

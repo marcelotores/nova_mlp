@@ -4,29 +4,43 @@ import ut
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
+#from corri import MLP
+from mlp_amostra_3 import MLP
 
-from corri import MLP
-#from mlp_array128 import MLP
-#from mlp_p_amostra import Mlp
 
 ## Importandno dados (numpy) por padrão. Para dataframe, use (data_frame=True) com segundo parâmetro
 dataSet = ut.im_data(4)
 
 
-dataSet_3_classes = dataSet[:315, :]
-
 ##################### TESTE
 
-#X = dataSet_3_classes[:, :24]
+# 2 Classes
+# classe1 = dataSet[:82, :]
+# classe2 = dataSet[315:, :]
+# classe1_classe2 = np.concatenate((classe1, classe2), axis=0)
+# X = classe1_classe2[:, :24]
+# y = classe1_classe2[:, 24].reshape(classe1_classe2.shape[0], 1)
+
+# 3 Classes
+dataSet_3_classes = dataSet[:315, :]
 X = dataSet_3_classes[:, :24]
 y = dataSet_3_classes[:, 24].reshape(dataSet_3_classes.shape[0], 1)
+
+# 4 Classes
+#X = dataSet[:, :24]
+#y = dataSet[:, 24].reshape(dataSet.shape[0], 1)
+
+# 10 Classes
+# dataSet_10 = ut.im_data(10)
+# X = dataSet_10[:, :24]
+# y = dataSet_10[:, 24].reshape(dataSet_10.shape[0], 1)
 
 # Pré-processamento dos dados
 encoder = OneHotEncoder(sparse=False)
 y = encoder.fit_transform(y)
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=42)
 
 
 # Normalizar os dados
@@ -34,7 +48,7 @@ X_train /= np.max(X_train, axis=0)
 X_test /= np.max(X_test, axis=0)
 
 input_size = X_train.shape[1]
-hidden_size = 3
+hidden_size = 4
 # 3
 # 0.1
 # teste 30%
@@ -42,8 +56,8 @@ output_size = y_train.shape[1]
 
 
 mlp = MLP(input_size, hidden_size, output_size)
-mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=100000)
 
+peso1 = mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=1000)
 
 
 # Fazer previsões no conjunto de teste
@@ -52,6 +66,8 @@ y_pred = mlp.predict(X_test)
 # Calcular a acurácia
 accuracy = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_test, axis=1)) / y_test.shape[0]
 print(f"Acurácia: {accuracy}")
+
+
 
 # Plotar o gráfico de erro durante o treinamento e teste
 plt.plot(range(len(mlp.train_errors)), mlp.train_errors, label='Treinamento')

@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import OneHotEncoder
 import ut
 from sklearn.model_selection import train_test_split
@@ -62,10 +63,54 @@ peso1 = mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epoch
 ## P e p -> d
 ##
 ##exit()
-
+##################
 # Fazer previsões no conjunto de teste
 y_pred = mlp.predict(X_test)
 
+# Converter as previsões de volta para as classes originais
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_test_classes = np.argmax(y_test, axis=1)
+
+# Calcular a matriz de confusão
+confusion_mat = confusion_matrix(y_test_classes, y_pred_classes)
+
+# Exibir a matriz de confusão
+print(confusion_mat)
+
+confusion_mat = confusion_matrix(y_test_classes, y_pred_classes)
+
+# Definir rótulos das classes
+class_labels = ['Setosa', 'Versicolor', 'Virginica']
+
+# Exibir a matriz de confusão
+fig, ax = plt.subplots()
+im = ax.imshow(confusion_mat, cmap='Blues')
+
+# Adicionar barra de cores
+cbar = ax.figure.colorbar(im, ax=ax)
+
+# Configurar os ticks e rótulos do eixo x e y
+ax.set_xticks(np.arange(len(class_labels)))
+ax.set_yticks(np.arange(len(class_labels)))
+ax.set_xticklabels(class_labels)
+ax.set_yticklabels(class_labels)
+
+# Rotacionar os rótulos do eixo x
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+
+# Loop para exibir os valores na matriz de confusão
+for i in range(len(class_labels)):
+    for j in range(len(class_labels)):
+        text = ax.text(j, i, confusion_mat[i, j], ha="center", va="center", color="black")
+
+# Configurar título e rótulos dos eixos
+ax.set_title("Matriz de Confusão")
+ax.set_xlabel("Valores Preditos")
+ax.set_ylabel("Valores Reais")
+
+# Exibir a figura
+plt.show()
+##################
 # Calcular a acurácia
 accuracy = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_test, axis=1)) / y_test.shape[0]
 print(f"Acurácia: {accuracy}")

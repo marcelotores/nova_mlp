@@ -1,83 +1,87 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
+from matplotlib import pyplot as plt
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+import ut
+from mlp_amostra_3 import MLP
+#from corri import MLP
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+dataSet = ut.im_data(4)
 
-def sigmoid_derivative(x):
-    return x * (1 - x)
+### Divisão das amostras em 4 classes de 60 amostras cada
+c1 = dataSet[:60, :]
+c2 = dataSet[82:142, :]
+c3 = dataSet[175:235, :]
+c4 = dataSet[315:375, :]
+classes_4 = np.concatenate((c1, c2, c3, c4), axis=0)
+#X = classes_4[:, :24]
+#y = classes_4[:, 24].reshape(classes_4.shape[0], 1)
 
-class MLP:
-    def _init_(self, input_size, hidden_size, output_size):
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.output_size = output_size
-        self.W1 = np.random.randn(self.input_size, self.hidden_size)
-        self.b1 = np.zeros((1, self.hidden_size))
-        self.W2 = np.random.randn(self.hidden_size, self.output_size)
-        self.b2 = np.zeros((1, self.output_size))
-        self.train_errors = []
-        self.test_errors = []
+### Divisão das amosras em 2 classes (c1, c4)
+classes_1_4 = np.concatenate((c1, c4), axis=0)
+#X = classes_1_4[:, :24]
+#y = classes_1_4[:, 24].reshape(classes_1_4.shape[0], 1)
 
-    def forward(self, X):
-        self.z1 = np.dot(X, self.W1) + self.b1
-        self.a1 = sigmoid(self.z1)
-        self.z2 = np.dot(self.a1, self.W2) + self.b2
-        self.a2 = sigmoid(self.z2)
-        return self.a2
+### Divisão das amostras em 2 classes (c1, c3)
 
-    def backward(self, X, y, learning_rate):
-        m = X.shape[0]
-        dZ2 = self.a2 - y
-        dW2 = np.dot(self.a1.T, dZ2) / m
-        db2 = np.sum(dZ2, axis=0, keepdims=True) / m
-        dZ1 = np.dot(dZ2, self.W2.T) * sigmoid_derivative(self.a1)
-        dW1 = np.dot(X.T, dZ1) / m
-        db1 = np.sum(dZ1, axis=0, keepdims=True) / m
-        self.W2 -= learning_rate * dW2
-        self.b2 -= learning_rate * db2
-        self.W1 -= learning_rate * dW1
-        self.b1 -= learning_rate * db1
+classes_1_3 = np.concatenate((c1, c4), axis=0)
+X = classes_1_3[:, :24]
+y = classes_1_3[:, 24].reshape(classes_1_3.shape[0], 1)
 
-    def train(self, X_train, y_train, X_test, y_test, learning_rate, num_epochs):
-        for epoch in range(num_epochs):
-            # Forward e Backward pass para treinamento
-            output_train = self.forward(X_train)
-            self.backward(X_train, y_train, learning_rate)
-            train_error = np.mean(np.abs(output_train - y_train))
-            self.train_errors.append(train_error)
-
-            # Forward pass para teste
-            output_test = self.forward(X_test)
-            test_error = np.mean(np.abs(output_test - y_test))
-            self.test_errors.append(test_error)
-
-    def predict(self, X):
-        return np.round(self.forward(X))
-
-# Carregar o conjunto de dados Iris
-iris = load_iris()
-X = iris.data
-y = iris.target.reshape(-1, 1)
-
-# Pré-processamento dos dados
+# Dividindo os rótulos em 4 atributos.
 encoder = OneHotEncoder(sparse=False)
 y = encoder.fit_transform(y)
 
-# Dividir o conjunto de dados em treinamento e teste
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Divindo os dados em testes e treinamento
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=42)
 
-# Normalizar os dados
+# Normalizando os dados
 X_train /= np.max(X_train, axis=0)
-X_test /= np.max(X_train, axis=0)
+X_test /= np.max(X_test, axis=0)
 
-# Definir a arquitetura da MLP
 input_size = X_train.shape[1]
-hidden_size = 10
+hidden_size = 50
+# 3
+# 0.1
+# teste 30%
 output_size = y_train.shape[1]
 
 mlp = MLP(input_size, hidden_size, output_size)
 
+initial_learning_rate = 0.1
+decay_rate = 0.01
+num_epochs = 1000
+
+#for epoch in range(num_epochs):
+#    learning_rate = initial_learning_rate * np.exp(-decay_rate * epoch)
+#    mlp.train(X_train, y_train, X_test, y_test, learning_rate, 1)
+
+mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=5000)
+
+# Fazer previsões no conjunto de teste
+y_pred = mlp.predict(X_test)
+
+# Calcular a acurácia
+accuracy = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_test, axis=1)) / y_test.shape[0]
+print(f"Acurácia: {accuracy}")
+
+# Plotar o gráfico de erro durante o treinamento e teste
+#plt.subplot(1, 2, 1)
+plt.plot(range(len(mlp.train_errors)), mlp.train_errors, label='Treinamento')
+plt.plot(range(len(mlp.test_errors)), mlp.test_errors, label='Teste')
+plt.xlabel('Época')
+plt.ylabel('Erro')
+plt.title('Gráfico de Erro durante o Treinamento')
+plt.legend()
+
+# Plotar o gráfico de acurácia durante o treinamento e teste
+#plt.subplot(1, 2, 2)
+#plt.plot(range(len(mlp.train_accuracies)), mlp.train_accuracies, label='Treinamento')
+#plt.plot(range(len(mlp.test_accuracies)), mlp.test_accuracies, label='Teste')
+#plt.xlabel('Época')
+#plt.ylabel('Acurácia')
+#plt.title('Gráfico de Acurácia durante o Treinamento e Teste')
+#plt.legend()
+
+#plt.tight_layout()
+plt.show()

@@ -21,6 +21,8 @@ class MLP:
         self.b2 = np.zeros((1, self.output_size))
         self.train_errors = []
         self.test_errors = []
+        self.train_accuracies = []
+        self.test_accuracies = []
         self.peso1 = []
     def forward(self, X):
         self.z1 = np.dot(X, self.W1) + self.b1
@@ -61,6 +63,9 @@ class MLP:
             output_train = self.forward(X_train)
             train_error = np.mean(np.abs(output_train - y_train))
             self.train_errors.append(train_error)
+            #
+            train_accuracy = np.sum(np.argmax(output_train, axis=1) == np.argmax(y_train, axis=1)) / y_train.shape[0]
+            self.train_accuracies.append(train_accuracy)
 
             # Backward pass para treinamento
             self.backward(X_train, y_train, learning_rate)
@@ -68,6 +73,8 @@ class MLP:
             output_test = self.forward(X_test)
             test_error = np.mean(np.abs(output_test - y_test))
             self.test_errors.append(test_error)
+            test_accuracy = np.sum(np.argmax(output_test, axis=1) == np.argmax(y_test, axis=1)) / y_test.shape[0]
+            self.test_accuracies.append(test_accuracy)
             #print(self.peso1)
             # P e p -> d
             #exit()
@@ -75,46 +82,3 @@ class MLP:
     def predict(self, X):
         return np.round(self.forward(X))
 
-
-# # Carregar o conjunto de dados Iris
-# data = load_iris()
-# X = data.data
-# y = data.target
-#
-# # Pré-processamento dos dados
-# enc = OneHotEncoder(sparse=False)
-# y = enc.fit_transform(y.reshape(-1, 1))
-#
-# # Dividir o conjunto de dados em treino e teste
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-#
-# # Criar e treinar o modelo MLP
-# input_size = X.shape[1]
-# hidden_size = 16
-# output_size = y.shape[1]
-#
-# mlp = MLP(input_size, hidden_size, output_size)
-# learning_rate = 0.1
-# num_epochs = 100
-#
-# mlp.train(X_train, y_train, X_test, y_test, learning_rate, num_epochs)
-#
-# # Fazer a predição
-# y_pred_train = mlp.predict(X_train)
-# y_pred_test = mlp.predict(X_test)
-#
-# # Calcular a acurácia
-# accuracy_train = np.mean(y_pred_train == y_train)
-# accuracy_test = np.mean(y_pred_test == y_test)
-#
-# print(f"Acurácia (Treinamento): {accuracy_train:.2%}")
-# print(f"Acurácia (Teste): {accuracy_test:.2%}")
-#
-# # Plotar curva de erro por época
-# epochs = range(1, num_epochs + 1)
-# plt.plot(epochs, mlp.train_errors, label='Erro de Treinamento')
-# plt.plot(epochs, mlp.test_errors, label='Erro de Teste')
-# plt.xlabel('Época')
-# plt.ylabel('Erro')
-# plt.legend()
-# plt.show()

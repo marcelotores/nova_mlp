@@ -24,7 +24,7 @@ colors = ['red', 'green', 'blue']
 fig, ax = plt.subplots()
 #classes_to_plot = [1, 2]
 
-for class_label in range(1, 4):
+for class_label in range(3):
     # Selecionar amostras da classe atual
     class_data = data[class_labels.flatten() == class_label]
     # Extrair atributos para os eixos x e y

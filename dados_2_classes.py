@@ -6,12 +6,16 @@ import numpy as np
 import pandas as pd
 #from corri import MLP
 from corri import MLP
+#from mlp_amostra_3 import MLP
 
 ## Importandno dados (numpy) por padrão. Para dataframe, use (data_frame=True) com segundo parâmetro
 dataSet = ut.im_data(4)
+classe1 = dataSet[:60, :]
+classe2 = dataSet[315:375, :]
+#classe1 = dataSet[:82, :]
+#classe2 = dataSet[315:, :]
 
-classe1 = dataSet[:82, :]
-classe2 = dataSet[315:, :]
+
 classe1_classe2 = np.concatenate((classe1, classe2), axis=0)
 
 
@@ -42,7 +46,16 @@ output_size = y_train.shape[1]
 
 
 mlp = MLP(input_size, hidden_size, output_size)
-mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.1, num_epochs=5000)
+
+#initial_learning_rate = 0.1
+#decay_rate = 0.01
+#num_epochs = 1000
+
+#for epoch in range(num_epochs):
+#    learning_rate = initial_learning_rate * np.exp(-decay_rate * epoch)
+#    mlp.train(X_train, y_train, X_test, y_test, learning_rate, 1)
+
+mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=5000)
 
 
 
@@ -55,11 +68,11 @@ print(f"Acurácia: {accuracy}")
 
 # Plotar o gráfico de erro durante o treinamento e teste
 plt.plot(range(len(mlp.train_errors)), mlp.train_errors, label='Treinamento')
-#plt.plot(range(len(mlp.test_errors)), mlp.test_errors, label='Teste')
+plt.plot(range(len(mlp.test_errors)), mlp.test_errors, label='Teste')
 plt.xlabel('Época')
 plt.ylabel('Erro')
 plt.title('Gráfico de Erro durante o Treinamento')
-#plt.legend()
+plt.legend()
 plt.show()
 
 #exit()

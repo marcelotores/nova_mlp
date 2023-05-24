@@ -15,13 +15,13 @@ c2 = dataSet[82:142, :]
 c3 = dataSet[175:235, :]
 c4 = dataSet[315:375, :]
 classes_4 = np.concatenate((c1, c2, c3, c4), axis=0)
-X = classes_4[:, :24]
-y = classes_4[:, 24].reshape(classes_4.shape[0], 1)
+#X = classes_4[:, :24]
+#y = classes_4[:, 24].reshape(classes_4.shape[0], 1)
 
 ################# C1 C2
 c1_c2 = np.concatenate((c1, c2), axis=0)
-# X = c1_c2[:, :24]
-# y = c1_c2[:, 24].reshape(c1_c2.shape[0], 1)
+X = c1_c2[:, :24]
+y = c1_c2[:, 24].reshape(c1_c2.shape[0], 1)
 
 ### Divisão das amosras em 2 classes (c1, c4)
 classes_1_4 = np.concatenate((c1, c4), axis=0)
@@ -73,7 +73,7 @@ num_epochs = 1000
 #    learning_rate = initial_learning_rate * np.exp(-decay_rate * epoch)
 #    mlp.train(X_train, y_train, X_test, y_test, learning_rate, 1)
 
-mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=1000)
+mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=10000)
 
 # Fazer previsões no conjunto de teste
 y_pred = mlp.predict(X_test)
@@ -100,7 +100,7 @@ print(confusion_mat)
 confusion_mat = confusion_matrix(y_test_classes, y_pred_classes)
 
 # Definir rótulos das classes
-class_labels = ['Classe 1', 'Classe 2', 'Classe 3', 'Classe 4']
+class_labels = ['Classe 1', 'Classe 2']
 
 # Exibir a matriz de confusão
 fig, ax = plt.subplots()

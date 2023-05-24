@@ -30,19 +30,19 @@ colors = ['red', 'green', 'orange', 'blue']
 # Plotar gráfico de dispersão
 fig, ax = plt.subplots()
 #classes_to_plot = [1, 2]
+for i in range(0, 24):
+    for class_label in range(1, 5):
+        # Selecionar amostras da classe atual
+        class_data = data[class_labels.flatten() == class_label]
+        # Extrair atributos para os eixos x e y
+        x = class_data[:, 0]  # Atributo 1
+        y = class_data[:, i]  # Atributo 2
 
-for class_label in range(1, 5):
-    # Selecionar amostras da classe atual
-    class_data = data[class_labels.flatten() == class_label]
-    # Extrair atributos para os eixos x e y
-    x = class_data[:, 0]  # Atributo 1
-    y = class_data[:, 1]  # Atributo 2
+        # Plotar os pontos da classe atual
+        ax.scatter(x, y, c=colors[class_label-1], label=f'Classe {class_label}')
 
-    # Plotar os pontos da classe atual
-    ax.scatter(x, y, c=colors[class_label-1], label=f'Classe {class_label}')
-
-ax.set_xlabel('0')
-ax.set_ylabel('1')
+ax.set_xlabel('Atributo 1')
+ax.set_ylabel('Atributo 2')
 ax.legend()
 plt.show()
 

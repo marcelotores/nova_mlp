@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import accuracy_score
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -78,7 +80,19 @@ class MLP:
             #print(self.peso1)
             # P e p -> d
             #exit()
+        # Calcular a acurácia de treinamento final
+        y_train_pred = np.argmax(output_train, axis=1)
+        y_train_true = np.argmax(y_train, axis=1)
+        train_accuracy = accuracy_score(y_train_true, y_train_pred)
+        print("Acurácia de Treinamento Final: {:.2%}".format(train_accuracy))
 
     def predict(self, X):
         return np.round(self.forward(X))
+
+    def compute_confusion_matrix(self, X_train, y_train):
+        predictions = self.predict(X_train)
+        y_pred = np.argmax(predictions, axis=1)
+        y_true = np.argmax(y_train, axis=1)
+        return confusion_matrix(y_true, y_pred)
+
 

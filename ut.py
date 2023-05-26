@@ -65,8 +65,51 @@ def str_to_numpy(y, qtd_cat):
                 vetor_lista.append(4)
             elif i == 'c4_p4':
                 vetor_lista.append(4)
+    elif qtd_cat == 2:
+        for i in y:
+            if i == 'c1_p1':
+                vetor_lista.append(1)
+            elif i == 'c2_p1':
+                vetor_lista.append(1)
+            elif i == 'c3_p1':
+                vetor_lista.append(2)
+            elif i == 'c3_p2':
+                vetor_lista.append(2)
+            elif i == 'c3_p3':
+                vetor_lista.append(2)
+            elif i == 'c3_p4':
+                vetor_lista.append(2)
+            elif i == 'c4_p1':
+                vetor_lista.append(2)
+            elif i == 'c4_p2':
+                vetor_lista.append(2)
+            elif i == 'c4_p3':
+                vetor_lista.append(2)
+            elif i == 'c4_p4':
+                vetor_lista.append(2)
 
-
+    elif qtd_cat == 3:
+        for i in y:
+            if i == 'c1_p1':
+                vetor_lista.append(1)
+            elif i == 'c2_p1':
+                vetor_lista.append(2)
+            elif i == 'c3_p1':
+                vetor_lista.append(3)
+            elif i == 'c3_p2':
+                vetor_lista.append(3)
+            elif i == 'c3_p3':
+                vetor_lista.append(3)
+            elif i == 'c3_p4':
+                vetor_lista.append(3)
+            elif i == 'c4_p1':
+                vetor_lista.append(3)
+            elif i == 'c4_p2':
+                vetor_lista.append(3)
+            elif i == 'c4_p3':
+                vetor_lista.append(3)
+            elif i == 'c4_p4':
+                vetor_lista.append(3)
     yy = np.array(vetor_lista).reshape((375, 1))
 
     return yy

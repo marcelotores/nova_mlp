@@ -4,10 +4,29 @@ from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 import ut
+import seaborn as sns
 from mlp_amostra_3 import MLP
 #from corri import MLP
 
 dataSet = ut.im_data(4)
+data2 = ut.im_data(2)
+data3 = ut.im_data(3)
+#print(np.count_nonzero(data3[:, 24] == 1))
+
+u1 = data3[0:82, :]
+u2 = data3[82:164, :]
+u3 = data3[175:257, :]
+u1_u2_u3 = np.concatenate((u1, u2, u3), axis=0)
+
+X = u1_u2_u3[:, :24]
+y = u1_u2_u3[:, 24].reshape(u1_u2_u3.shape[0], 1)
+
+d1 = data2[0:175, :]
+d2 = data2[175:350, :]
+d1_d2 = np.concatenate((d1, d2), axis=0)
+
+#X = d1_d2[:, :24]
+#y = d1_d2[:, 24].reshape(d1_d2.shape[0], 1)
 
 ### Divisão das amostras em 4 classes de 60 amostras cada
 c1 = dataSet[:60, :]
@@ -20,8 +39,12 @@ classes_4 = np.concatenate((c1, c2, c3, c4), axis=0)
 
 ################# C1 C2
 c1_c2 = np.concatenate((c1, c2), axis=0)
-X = c1_c2[:, :24]
-y = c1_c2[:, 24].reshape(c1_c2.shape[0], 1)
+########## c1_c2 com sem os atributos 17, 18, 19, 21, 22
+#X = c1_c2[:, [0, 2, 21]]
+#X = c1_c2[:, [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 14, 15, 16, 18, 19, 20, 21, 22, 23]]
+##########
+#X = c1_c2[:, :24]
+#y = c1_c2[:, 24].reshape(c1_c2.shape[0], 1)
 
 ### Divisão das amosras em 2 classes (c1, c4)
 classes_1_4 = np.concatenate((c1, c4), axis=0)
@@ -31,14 +54,14 @@ classes_1_4 = np.concatenate((c1, c4), axis=0)
 ### Divisão das amostras em 2 classes (c1, c3)
 
 classes_1_3 = np.concatenate((c1, c4), axis=0)
-# X = classes_1_3[:, :24]
-# y = classes_1_3[:, 24].reshape(classes_1_3.shape[0], 1)
+#X = classes_1_3[:, :24]
+#y = classes_1_3[:, 24].reshape(classes_1_3.shape[0], 1)
 
 ############ Classe C2 C3
 
 c2_c3 = np.concatenate((c2, c3), axis=0)
-# X = c2_c3[:, :24]
-# y = c2_c3[:, 24].reshape(c2_c3.shape[0], 1)
+#X = c2_c3[:, :24]
+#y = c2_c3[:, 24].reshape(c2_c3.shape[0], 1)
 
 ############ Classe C3 C4
 c3_c4 = np.concatenate((c2, c3), axis=0)
@@ -73,7 +96,7 @@ num_epochs = 1000
 #    learning_rate = initial_learning_rate * np.exp(-decay_rate * epoch)
 #    mlp.train(X_train, y_train, X_test, y_test, learning_rate, 1)
 
-mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=10000)
+mlp.train(X_train, y_train, X_test, y_test, learning_rate=0.01, num_epochs=5000)
 
 # Fazer previsões no conjunto de teste
 y_pred = mlp.predict(X_test)
@@ -87,6 +110,7 @@ y_pred = mlp.predict(X_test)
 accuracy = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_test, axis=1)) / y_test.shape[0]
 print(f"Acurácia: {accuracy}")
 
+
 # Converter as previsões de volta para as classes originais
 y_pred_classes = np.argmax(y_pred, axis=1)
 y_test_classes = np.argmax(y_test, axis=1)
@@ -97,10 +121,24 @@ confusion_mat = confusion_matrix(y_test_classes, y_pred_classes)
 # Exibir a matriz de confusão
 print(confusion_mat)
 
+########################## Matriz de Confusão Treinamento
+
+confusion_train = mlp.compute_confusion_matrix(X_train, y_train)
+print("Matriz de Confusão (Treinamento):\n", confusion_train)
+
+# Plotar a matriz de confusão de treinamento usando um mapa de calor
+sns.heatmap(confusion_train, annot=True, cmap="Blues", fmt="d")
+plt.xlabel("Valores Preditos")
+plt.ylabel("Valores Reais")
+plt.title("Matriz de Confusão (Treinamento)")
+plt.show()
+
+#########################################################
+
 confusion_mat = confusion_matrix(y_test_classes, y_pred_classes)
 
 # Definir rótulos das classes
-class_labels = ['Classe 1', 'Classe 2']
+class_labels = ['1', '2', '3']
 
 # Exibir a matriz de confusão
 fig, ax = plt.subplots()
@@ -116,7 +154,7 @@ ax.set_xticklabels(class_labels)
 ax.set_yticklabels(class_labels)
 
 # Rotacionar os rótulos do eixo x
-plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+plt.setp(ax.get_xticklabels(), rotation=0, ha="right", rotation_mode="anchor")
 
 # Loop para exibir os valores na matriz de confusão
 for i in range(len(class_labels)):
@@ -124,7 +162,7 @@ for i in range(len(class_labels)):
         text = ax.text(j, i, confusion_mat[i, j], ha="center", va="center", color="black")
 
 # Configurar título e rótulos dos eixos
-ax.set_title("Matriz de Confusão")
+ax.set_title("Matriz de Confusão (Teste)")
 ax.set_xlabel("Valores Preditos")
 ax.set_ylabel("Valores Reais")
 
